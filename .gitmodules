@@ -1,0 +1,3 @@
+[submodule "rademacher-sys"]
+	path = rademacher-sys
+	url = https://github.com/rejchev/rademacher-sys.git
