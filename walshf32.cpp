@@ -28,7 +28,7 @@ W_API int32_t __stdcall walp(uint32_t n, double_t x) {
 
 
 W_API int32_t __stdcall wal(uint32_t n, double_t x) {
-    return pal(binaryToGrayCode(n), x);
+    return walp(binaryToGrayCode(n), x);
 }
 
 W_API int32_t __stdcall had(uint32_t n, double_t x) {
