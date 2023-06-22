@@ -141,6 +141,46 @@ TEST(WALSH, W7)
     }
 }
 
+TEST(WALSH, SEQ1_8)
+{
+    const int32_t n = 8;
+    const int32_t functionNumber = 1;
+
+    const double_t dx = 1.0/n;
+    const double_t x = dx - 1.0/(n * 2);
+
+    // expected: 1 1 1 1 | -1 -1 -1 -1
+
+    auto* seq = wal_seq(functionNumber, n, x, dx);
+
+    EXPECT_TRUE(seq != nullptr);
+
+    for(int32_t i = 0; i < n; i++)
+        EXPECT_EQ(((i/4 == 0) ? 1 : -1), *(seq + i));
+
+    free(seq);
+}
+
+TEST(WALSH, SEQ15_16)
+{
+    const int32_t n = 16;
+    const int32_t functionNumber = 15;
+
+    const double_t dx = 1.0/n;
+    const double_t x = dx - 1.0/(n * 2);
+
+    // expected: 1 -1 1 -1 1 -1 ...
+
+    auto* seq = wal_seq(functionNumber, n, x, dx);
+
+    EXPECT_TRUE(seq != nullptr);
+
+    for(int32_t i = 0; i < n; i++)
+        EXPECT_EQ(((i%2 == 0) ? 1 : -1), *(seq + i));
+
+    free(seq);
+}
+
 double_t calc_x(const double_t& t, const int32_t& T) {
     double_t dt = 1.0/(2*T);
 
