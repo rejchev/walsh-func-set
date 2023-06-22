@@ -36,6 +36,25 @@ wal_multiply(uint32_t k, uint32_t m, double_t x, int32_t (__stdcall *pWal)(uint3
     return pWal(k^m, x);
 }
 
+W_API int32_t * __stdcall wal_seq(
+        uint32_t k,
+        uint32_t n,
+        double_t x,
+        double_t dx,
+        int32_t (__stdcall *pWal)(uint32_t, double_t)) {
+    if(k >= n || pWal == nullptr) return nullptr;
+
+    auto* seq = (int32_t*)malloc(n * sizeof(int32_t));
+
+    for(uint32_t i = 0; i < n; i++) {
+        *(seq + i) = pWal(k, x);
+
+        x += dx;
+    }
+
+    return seq;
+}
+
 W_API uint32_t __stdcall grayCodeToBinary(uint32_t n) {
     uint32_t bin;
 
@@ -48,33 +67,3 @@ W_API uint32_t __stdcall grayCodeToBinary(uint32_t n) {
 W_API uint32_t __stdcall binaryToGrayCode(uint32_t n) {
     return n ^ ((n & 0xEEEEEEEE) >> 1);
 }
-
-// 100 -> 001, 110 -> 011, ...
-W_API uint32_t __stdcall bitReverse(uint32_t n) {
-    if(!n) return n;
-
-    uint32_t output;
-    for(output = 0; n; n >>= 1, output <<= 1)
-        output |= (n & 1);
-
-    return output;
-}
-
-// Gray -> Had
-// 000 -> 000 | 0 -> 0
-// 001 -> 100 | 1 -> 4
-// 011 -> 110 | 3 -> 6
-// 010 -> 010 | 2 -> 2
-// 110 -> 011 | 6 -> 3
-// 111 -> 111 | 7 -> 7
-// 101 -> 101 | 5 -> 5
-// 100 -> 001 | 4 -> 1
-W_API uint32_t __stdcall grayCodeToHadamard(uint32_t n) {
-    return bitReverse(n);
-}
-
-W_API uint32_t __stdcall hadamardToGrayCode(uint32_t n) {
-    return bitReverse(n);
-}
-
-

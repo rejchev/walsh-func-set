@@ -20,8 +20,25 @@ namespace walshf {
 // Walsh-Hadamard numeration
 //    W_API int32_t __stdcall had(uint32_t n, double_t x);
 
-// Walsh multiplication (Walsh-Walsh)
-    W_API int32_t __stdcall wal_multiply(uint32_t k, uint32_t m, double_t x);
+// Walsh multiplication
+    W_API int32_t __stdcall wal_multiply(
+            uint32_t k, uint32_t m, double_t x, int32_t (__stdcall *pWal)(uint32_t, double_t) = wal
+    );
+
+// Walsh sequence of n elems [must be free]
+// @param k     number of function
+// @param n     elems count
+// @param x     x  (i0: wal(k, x); i1: wal(k, x + dx); ...)
+// @param dx    step x per iter
+// @param pWal  pointer to wal function [wal or walp]
+//
+// @return      nullptr on err/seq of n elems
+    W_API int32_t* __stdcall wal_seq(
+            uint32_t k,
+            uint32_t n,
+            double_t x,
+            double_t dx,
+            int32_t (__stdcall *pWal)(uint32_t, double_t) = wal);
 
 // Normal binary number code to gray code conversation
     W_API uint32_t __stdcall binaryToGrayCode(uint32_t n);
