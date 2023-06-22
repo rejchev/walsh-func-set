@@ -31,8 +31,11 @@ W_API int32_t __stdcall wal(uint32_t n, double_t x) {
     return walp(binaryToGrayCode(n), x);
 }
 
-W_API int32_t __stdcall
-wal_multiply(uint32_t k, uint32_t m, double_t x, int32_t (__stdcall *pWal)(uint32_t, double_t)) {
+W_API int32_t __stdcall wal_multiply(
+        uint32_t k,
+        uint32_t m,
+        double_t x,
+        int32_t (__stdcall *pWal)(uint32_t, double_t)) {
     return pWal(k^m, x);
 }
 
@@ -53,6 +56,18 @@ W_API int32_t * __stdcall wal_seq(
     }
 
     return seq;
+}
+
+W_API int32_t * __stdcall wal_seq_log2(uint32_t k, uint32_t n, int32_t (__stdcall *pWal)(uint32_t, double_t)) {
+    if(k >= n || pWal == nullptr) return nullptr;
+
+    if((1 << (int32_t)log2(n)) != n)
+        return nullptr;
+
+    double_t dx = 1.0/n;
+    double_t x = dx - 1.0/(2 * n);
+
+    return wal_seq(k, n, x, dx, pWal);
 }
 
 W_API uint32_t __stdcall grayCodeToBinary(uint32_t n) {

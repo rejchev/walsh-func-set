@@ -25,7 +25,7 @@ namespace walshf {
             uint32_t k, uint32_t m, double_t x, int32_t (__stdcall *pWal)(uint32_t, double_t) = wal
     );
 
-// Walsh sequence of n elems [must be free]
+// Walsh sequence of n elems [must be freed]
 // @param k     number of function
 // @param n     elems count
 // @param x     x  (i0: wal(k, x); i1: wal(k, x + dx); ...)
@@ -38,6 +38,30 @@ namespace walshf {
             uint32_t n,
             double_t x,
             double_t dx,
+            int32_t (__stdcall *pWal)(uint32_t, double_t) = wal);
+
+// Walsh sequence of n elems [must be freed]
+//
+//  x is calculating as x = (1/n - dx) with step: 1/n and dx: 1/(2n)
+//
+//  Example:
+//  1|--.--    --.--
+//   |------------------1--> x | '.' - (x - dx) = 1 or -1; step x: 1/n
+// -1|    __.__
+//
+//  Example (with out dx):
+//  1|----.    .----.
+//   |----.----.----.------1--> x | '.' - (x) = 1 and 0 and -1
+// -1|    .____.
+//
+// @param k     number of function
+// @param n     elems count = {n = 2^i, i in N0}
+// @param pWal  pointer to wal function [wal or walp]
+//
+// @return      nullptr on err/seq of n elems
+    W_API int32_t* __stdcall wal_seq_log2(
+            uint32_t k,
+            uint32_t n,
             int32_t (__stdcall *pWal)(uint32_t, double_t) = wal);
 
 // Normal binary number code to gray code conversation
