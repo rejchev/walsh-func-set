@@ -6,7 +6,7 @@
 
 using namespace walshf;
 
-W_API int32_t __stdcall pal(uint32_t n, double_t x) {
+W_API int32_t __stdcall walp(uint32_t n, double_t x) {
 
     if(n == 0) return 1;
 

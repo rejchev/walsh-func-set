@@ -11,8 +11,8 @@
 
 namespace walshf {
 
-    // Walsh–Paley numeration (known as Gray codes)
-    W_API int32_t __stdcall pal(uint32_t n, double_t x);
+// Walsh–Paley numeration (known as Gray codes)
+    W_API int32_t __stdcall walp(uint32_t n, double_t x);
 
 // Walsh-Walsh numeration (sorted )
     W_API int32_t __stdcall wal(uint32_t n, double_t x);
