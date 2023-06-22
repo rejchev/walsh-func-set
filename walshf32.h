@@ -17,8 +17,8 @@ namespace walshf {
 // Walsh-Walsh numeration (sorted )
     W_API int32_t __stdcall wal(uint32_t n, double_t x);
 
-// Walsh-Hadamard numeration ()
-    W_API int32_t __stdcall had(uint32_t n, double_t x);
+// Walsh-Hadamard numeration
+//    W_API int32_t __stdcall had(uint32_t n, double_t x);
 
 // Walsh multiplication (Walsh-Walsh)
     W_API int32_t __stdcall wal_multiply(uint32_t k, uint32_t m, double_t x);
@@ -30,13 +30,21 @@ namespace walshf {
     W_API uint32_t __stdcall grayCodeToBinary(uint32_t n);
 
 // Gray code to Hadamard
-    W_API uint32_t __stdcall grayCodeToHadamard(uint32_t n);
+// 000 -> 000 | 0 -> 0
+// 001 -> 100 | 1 -> 4
+// 011 -> 110 | 3 -> 6
+// 010 -> 010 | 2 -> 2
+// 110 -> 011 | 6 -> 3
+// 111 -> 111 | 7 -> 7
+// 101 -> 101 | 5 -> 5
+// 100 -> 001 | 4 -> 1
+//    W_API uint32_t __stdcall grayCodeToHadamard(uint32_t n);
 
 // Hadamard to Gray code
-    W_API uint32_t __stdcall hadamardToGrayCode(uint32_t n);
+//    W_API uint32_t __stdcall hadamardToGrayCode(uint32_t n);
 
 // Binary reverse
-    W_API uint32_t __stdcall bitReverse(uint32_t n);
+//    W_API uint32_t __stdcall bitReverse(uint32_t n);
 }
 
 #endif //WALSH_SYSTEM_W32_WALSHF32_H

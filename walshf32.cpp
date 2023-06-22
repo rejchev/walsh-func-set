@@ -31,12 +31,9 @@ W_API int32_t __stdcall wal(uint32_t n, double_t x) {
     return walp(binaryToGrayCode(n), x);
 }
 
-W_API int32_t __stdcall had(uint32_t n, double_t x) {
-    return pal(hadamardToGrayCode(n), x);
-}
-
-W_API int32_t __stdcall wal_multiply(uint32_t k, uint32_t m, double_t x) {
-    return wal(k^m, x);
+W_API int32_t __stdcall
+wal_multiply(uint32_t k, uint32_t m, double_t x, int32_t (__stdcall *pWal)(uint32_t, double_t)) {
+    return pWal(k^m, x);
 }
 
 W_API uint32_t __stdcall grayCodeToBinary(uint32_t n) {
