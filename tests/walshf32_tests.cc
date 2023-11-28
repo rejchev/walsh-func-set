@@ -218,6 +218,38 @@ TEST(WALSH, LOG2_SEQ)
     free(seq);
 }
 
+TEST(WALSH, NORMALIZED_BWAL_16)
+{
+    const int32_t n = 16;
+
+    uint32_t* seq;
+
+    std::cout << std::endl;
+
+    for(int32_t i = 0; i < n; i++) {
+
+        seq = wal_binseq_log2(i, n, wal);
+
+        EXPECT_TRUE(seq != nullptr);
+
+        std::cout << "w" << i << ":";
+
+        if(i < 10)
+            std::cout << " ";
+
+        std::cout << " ";
+
+        for(int j = 0; j < n; j++)
+            std::cout << *(seq + j) << " ";
+
+        std::cout << std::endl;
+
+        free(seq);
+    }
+
+    std::cout << std::endl;
+}
+
 double_t calc_x(const double_t& t, const int32_t& T) {
     const double_t dt = 1.0/(2*T);
 
