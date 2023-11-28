@@ -71,13 +71,13 @@ TEST(WALSH, W4)
     const int32_t x = 8;
     const int32_t function = 4;
 
-    std::vector<int32_t> expected {
+    const std::vector<int32_t> expected {
             1, -1, -1, 1, 1, -1, -1, 1
     };
 
     for(int i = 1, res; i <= x; i++)
     {
-        res = wal(function, calc_x(double_t(i), x));
+        res = wal(function, calc_x(i, x));
         print(i, expected[i - 1], res);
 
         EXPECT_EQ(expected[i-1], res);
@@ -151,7 +151,7 @@ TEST(WALSH, SEQ1_8)
 
     // expected: 1 1 1 1 | -1 -1 -1 -1
 
-    auto* seq = wal_seq(functionNumber, n, x, dx);
+    auto* seq = wal_seq(functionNumber, n, x, dx, wal);
 
     EXPECT_TRUE(seq != nullptr);
 
@@ -171,7 +171,7 @@ TEST(WALSH, SEQ15_16)
 
     // expected: 1 -1 1 -1 1 -1 ...
 
-    auto* seq = wal_seq(functionNumber, n, x, dx);
+    auto* seq = wal_seq(functionNumber, n, x, dx, wal);
 
     EXPECT_TRUE(seq != nullptr);
 
@@ -181,14 +181,34 @@ TEST(WALSH, SEQ15_16)
     free(seq);
 }
 
-TEST(WALSH, LOG2_SEQ)
+TEST(WALSH, BSEQ31_32)
 {
-    const int32_t n = 16;
-    const int32_t functionNumber = 15;
+    const int32_t n = 32;
+    const int32_t functionNumber = 31;
+
+    const double_t dx = 1.0/n;
+    const double_t x = dx - 1.0/(n * 2);
 
     // expected: 1 -1 1 -1 1 -1 ...
 
-    auto* seq = wal_seq_log2(functionNumber, n);
+    auto* seq = wal_binseq(functionNumber, n, x, dx, wal);
+
+    EXPECT_TRUE(seq != nullptr);
+
+    for(int32_t i = 0; i < n; i++)
+        EXPECT_EQ(((i%2 == 0) ? 0 : 1), *(seq + i));
+
+    free(seq);
+}
+
+TEST(WALSH, LOG2_SEQ)
+{
+    const int32_t n = 64;
+    const int32_t functionNumber = 63;
+
+    // expected: 1 -1 1 -1 1 -1 ...
+
+    auto* seq = wal_seq_log2(functionNumber, n, wal);
 
     EXPECT_TRUE(seq != nullptr);
 
@@ -199,7 +219,7 @@ TEST(WALSH, LOG2_SEQ)
 }
 
 double_t calc_x(const double_t& t, const int32_t& T) {
-    double_t dt = 1.0/(2*T);
+    const double_t dt = 1.0/(2*T);
 
     return (t/T - dt);
 }
