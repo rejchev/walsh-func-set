@@ -11,92 +11,177 @@
 
 namespace walshf {
 
-    // Walsh–Paley numeration (known as Gray codes)
-    W_API int32_t __stdcall walp(uint32_t n, double_t x);
+    // default rad function implementation
+    W_API int32_t (__stdcall *RAD_DEFAULT_PTR) (int32_t, double);
 
-    // Walsh-Walsh numeration (sorted )
-    W_API int32_t __stdcall wal(uint32_t n, double_t x);
+    /**
+     * @brief Walsh functions
+     *
+     * @param n - function number (using Paley nums, starting from 0)
+     * @param x - value
+     *
+     * @return {1, -1}
+     *
+     * */
+    W_API int32_t __stdcall walp(uint32_t n, double x, int32_t (__stdcall *pRad)(int32_t, double) = RAD_DEFAULT_PTR);
 
-    // Walsh multiplication of k & m (func numbers)
-    W_API int32_t __stdcall wal_multiply(
+    /**
+     * @brief Walsh functions (sorted)
+     *
+     * @param n - function number (using Walsh nums, starting from 0)
+     * @param x - value
+     *
+     * @return {1, -1}
+     *
+     * */
+    W_API int32_t __stdcall wal(uint32_t n, double x, int32_t (__stdcall *pRad)(int32_t, double) = RAD_DEFAULT_PTR);
+
+    /**
+     * @brief Gets Walsh function result (using nums multiplication)
+     *
+     * @param k - function number (starting from 0)
+     * @parma m - another function number (starting from 0)
+     * @param x - value
+     * @param pWal - pointer on Walsh functions set implementation (wal or walp)
+     *
+     * @return {1, -1} or 0 on n < 0
+     *
+     * */
+    W_API int32_t __stdcall walmul(
         uint32_t k,
         uint32_t m,
-        double_t x,
-        int32_t (__stdcall *pWal)(uint32_t, double_t) = wal);
+        double x,
+        int32_t (__stdcall *pWal)(uint32_t, double, int32_t (__stdcall *)(int32_t, double)) = wal,
+        int32_t (__stdcall *pRad)(int32_t, double) = RAD_DEFAULT_PTR);
 
-    // Walsh sequence of n elems [must be freed]
-    // @param k     number of function
-    // @param n     elems count
-    // @param x     x  (i0: wal(k, x); i1: wal(k, x + dx); ...)
-    // @param dx    step x per iter
-    // @param pWal  pointer to wal function [wal or walp]
-    //
-    // @return      nullptr on err/seq of n elems
-    W_API int32_t* __stdcall wal_seq(
+    /**
+     * @brief Gets sequence of Walsh function results (must be freed via free)
+     *
+     * @param k - function number (starting from 0)
+     * @param n - seq size
+     * @param x - value
+     * @param dx - value step
+     * @param pWal - pointer on Walsh functions set implementation (wal or walp)
+     *
+     * @return  seq of {1, -1} vals on success,
+     *          nullptr  on  k >= n or pWal = null
+     *
+     * */
+    W_API int32_t* __stdcall walseq(
             uint32_t k,
             uint32_t n,
-            double_t x,
-            double_t dx,
-            int32_t (__stdcall *pWal)(uint32_t, double_t) = wal);
+            double x,
+            double dx,
+            int32_t (__stdcall *pWal)(uint32_t, double, int32_t (__stdcall *)(int32_t, double)) = wal,
+            int32_t (__stdcall *pRad)(int32_t, double) = RAD_DEFAULT_PTR);
 
-    // Walsh sequence of n elems [must be freed]
-    // @param k     number of function
-    // @param n     elems count
-    // @param x     x  (i0: wal(k, x); i1: wal(k, x + dx); ...)
-    // @param dx    step x per iter
-    // @param pWal  pointer to wal function [wal or walp]
-    //
-    // @return      nullptr on err/seq of n elems
-    W_API uint32_t* __stdcall wal_binseq(
+    /**
+     * @brief Gets binary sequence of Walsh function results (must be freed via free)
+     *
+     * @param k - function number (starting from 0)
+     * @param n - seq size
+     * @param x - value
+     * @param dx - value step
+     * @param pWal - pointer on Walsh functions set implementation (wal or walp)
+     *
+     * @return  seq of {1, -1} vals on success,
+     *          nullptr  on  k >= n or pWal = null
+     *
+     * */
+    W_API uint32_t* __stdcall walbseq(
             uint32_t k,
             uint32_t n,
-            double_t x,
-            double_t dx,
-            int32_t (__stdcall *pWal)(uint32_t, double_t) = wal);
+            double x,
+            double dx,
+            int32_t (__stdcall *pWal)(uint32_t, double, int32_t (__stdcall *)(int32_t, double)) = wal,
+            int32_t (__stdcall *pRad)(int32_t, double) = RAD_DEFAULT_PTR);
 
-    // Walsh sequence of n elems [must be freed]
-    //
-    //  x is calculating as x = (1/n - dx) with step: 1/n and dx: 1/(2n)
-    //
-    //  Example:
-    //  1|--.--    --.--
-    //   |------------------1--> x | '.' - (x - dx) = 1 or -1; step x: 1/n
-    // -1|    __.__
-    //
-    // @param k     number of function
-    // @param n     elems count = {n = 2^i, i in N0}
-    // @param pWal  pointer to wal function [wal or walp]
-    //
-    // @return      nullptr on err/seq of n elems
-    W_API int32_t* __stdcall wal_seq_log2(
+    /**
+     * @brief Gets sequence of Walsh function results (must be freed via free)
+     *
+     * @param k - function number (starting from 0)
+     * @param n - seq size (n = 2^m, m = 0,1,2,3 ....)
+     * @param pWal - pointer on Walsh functions set implementation (wal or walp)
+     *
+     * @return  seq of {1, -1} vals on success,
+     *          nullptr  on      k >= n
+     *                       or  pWal = null
+     *                       or  n is not pure log2 val
+     *
+     * */
+    W_API int32_t* __stdcall walseq_log2(
             uint32_t k,
             uint32_t n,
-            int32_t (__stdcall *pWal)(uint32_t, double_t) = wal);
+            int32_t (__stdcall *pWal)(uint32_t, double, int32_t (__stdcall *)(int32_t, double)) = wal,
+            int32_t (__stdcall *pRad)(int32_t, double) = RAD_DEFAULT_PTR);
 
-    // Walsh binary sequence of n elems [must be freed]
-    //
-    //  x is calculating as x = (1/n - dx) with step: 1/n and dx: 1/(2n)
-    //
-    // @param k     number of function
-    // @param n     elems count = {n = 2^i, i in N0}
-    // @param pWal  pointer to wal function [wal or walp]
-    //
-    // @return      nullptr on err/seq of n elems
-    W_API uint32_t* __stdcall wal_binseq_log2(
+    /**
+     * @brief Gets binary sequence of Walsh function results (must be freed via free)
+     *
+     * @param k - function number (starting from 0)
+     * @param n - seq size (n = 2^m, m = 0,1,2,3 ....)
+     * @param pWal - pointer on Walsh functions set implementation (wal or walp)
+     *
+     * @return  seq of {1, -1} vals on success,
+     *          nullptr  on      k >= n
+     *                       or  pWal = null
+     *                       or  n is not pure log2 val
+     *
+     * */
+    W_API uint32_t* __stdcall walbseq_log2(
             uint32_t k,
             uint32_t n,
-            int32_t (__stdcall *pWal)(uint32_t, double_t) = wal);
+            int32_t (__stdcall *pWal)(uint32_t, double, int32_t (__stdcall *)(int32_t, double)) = wal,
+            int32_t (__stdcall *pRad)(int32_t, double) = RAD_DEFAULT_PTR);
 
-    // Normal binary number code to gray code conversation
-    W_API uint32_t __stdcall bin2gray(uint32_t n);
+    /**
+     * @brief Walsh to Paley nums conversation
+     *
+     *   (normal values to Gray codes conversion)
+     *
+     * @param n - source num
+     *
+     * @return Paley num
+     *
+     * */
+    W_API uint32_t __stdcall wal2pal(uint32_t n);
 
-    // Gray code to normal binary number code conversation
-    W_API uint32_t __stdcall gray2bin(uint32_t n);
+    /**
+     * @brief Paley to Walsh nums conversation
+     *
+     *   (Gray codes to normal values conversion)
+     *
+     * @param n - source num
+     *
+     * @return Walsh num
+     *
+     * */
+    W_API uint32_t __stdcall pal2wal(uint32_t n);
 
-    // Walsh function result to bin conversion
+    /**
+     * @brief Walsh to binary conversion
+     *
+     *   (func results {1, -1} to binary {1, 0} conversion)
+     *
+     * @param n - value {1, -1}
+     *
+     * @return 1 on -1
+     *         0 on 1
+     *
+     * */
     W_API uint32_t __stdcall wal2bin(uint32_t n);
 
-    // Bin to normal walsh func result conversion
+    /**
+     * @brief Binary to Walsh conversion
+     *
+     *   (binary {1, 0} to func results {1, -1} conversion)
+     *
+     * @param n - value {1, -1}
+     *
+     * @return 1 on -1
+     *         0 on 1
+     *
+     * */
     W_API int32_t __stdcall bin2wal(uint32_t n);
 
 }
